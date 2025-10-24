@@ -1,4 +1,3 @@
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,7 +16,9 @@ public class PlayerController : MonoBehaviour {
     private float horizontalInput;
 
     private void FixedUpdate() {
-        rb.linearVelocity = new Vector2(horizontalInput * speed, rb.linearVelocity.y);
+        if (rb == null) return;
+
+        rb.velocity = new Vector2(horizontalInput * speed, rb.velocity.y);
 
     }
 
@@ -25,13 +26,13 @@ public class PlayerController : MonoBehaviour {
     public void Move(InputAction.CallbackContext context) {
         horizontalInput = context.ReadValue<Vector2>().x;
 
-        if (horizontalInput > 0.1f) transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1);
-        else if (horizontalInput < -0.1f) transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, 1);
+        if (horizontalInput > 0.1f) transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);
+        else if (horizontalInput < -0.1f) transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);
     }
 
     public void Jump(InputAction.CallbackContext context) {
         if (context.performed && IsGrounded()) {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpingPower);
+            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
 
         }
     }
